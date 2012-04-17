@@ -133,7 +133,10 @@ class BubsBitlyPlugin {
   }
   
   function addMetaBoxJS() {
-    wp_enqueue_script('bbp_meta_box_js', plugins_url('/'. BBP_PLUGIN_SLUG .'.js', __FILE__), array('jquery'));
+    global $pagenow;
+    
+    if ( $pagenow == 'post.php' || $pagenow == 'post-new.php' )
+      wp_enqueue_script('bbp_meta_box_js', plugins_url('/'. BBP_PLUGIN_SLUG .'.js', __FILE__), array('jquery'));
   }
   
   function autoShortlink( $new_status, $old_status, $post ) {
