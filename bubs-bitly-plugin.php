@@ -130,6 +130,11 @@ class BubsBitlyPlugin {
     else {
       echo '<input type="text" size="20" value="' . $shortlink[0] . '" disabled="disabled" />';
     }
+    
+    // Add 'Success' Message
+    if ( isset($_GET['bbp_success']) && $_GET['bbp_success'] == '1' ) {
+      echo '<div id="bbp_success" class="updated"><p>Bit.ly shortlink created!</p></div>';
+    }
   }
   
   function addMetaBoxJS() {
@@ -164,6 +169,7 @@ class BubsBitlyPlugin {
       return;
     
     update_post_meta($post->ID, 'bitly_link', $shortlink);
+    add_filter('redirect_post_location', array($this, 'addSuccessQueryArg'), 10, 2);
   }
   
   function manualShortlink() {
@@ -193,6 +199,12 @@ class BubsBitlyPlugin {
       echo $error_response;
     }
     exit;
+  }
+  
+  function addSuccessQueryArg( $location, $post_id ) {
+    // Filter Hook: wp_redirect( apply_filters( 'redirect_post_location', $location, $post_id ) );
+    // Ref: redirect_post() : wp-admin/post.php
+    return add_query_arg('bbp_success', true, $location);
   }
   
   function getShortlink( $shortlink, $id, $context, $allow_slugs ) {
